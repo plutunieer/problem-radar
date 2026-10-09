@@ -130,7 +130,7 @@ function heat(v){return v>=70?"#ff5a72":v>=45?"#ff8a3d":v>=25?"#ffc24a":"#3dff9b
 function bars(el,counts,key,colorFn){
   const e=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,10),m=Math.max(1,...e.map(x=>x[1]));
   document.getElementById(el).innerHTML=e.map(([k,v])=>`<div class="bar-row ${S[key]===k?"on":""}" data-k="${esc(k)}"><div class="name">${esc(k)}</div><div class="track"><div class="fill" style="width:${v/m*100}%;background:${colorFn(k)}"></div></div><div class="val">${v}</div></div>`).join("");
-  document.querySelectorAll("#"+el+" .bar-row").forEach(r=>r.onclick=()=>{S[key]=S[key]===r.dataset.k?"":r.dataset.k;S.limit=30;sync();render()});
+  document.querySelectorAll("#"+el+" .bar-row").forEach(r=>r.onclick=()=>{S[key]=S[key]===r.dataset.k?"":r.dataset.k;S.limit=30;sync();render();toFeed()});
 }
 function filtered(){
   const q=S.q.toLowerCase();
@@ -167,6 +167,7 @@ function render(){
   document.getElementById("feed").innerHTML=f.slice(0,S.limit).map(card).join("")||`<div class="empty">No problems match these filters.</div>`;
   document.getElementById("moreBtn").style.display=f.length>S.limit?"block":"none";
 }
+function toFeed(){document.getElementById("feed").scrollIntoView({behavior:"smooth",block:"start"})}
 function count(a,fn){const o={};a.forEach(p=>fn(p).forEach(k=>o[k]=(o[k]||0)+1));return o}
 function sync(){fSub.value=S.sub;fCat.value=S.cat;fTopic.value=S.topic}
 const fSub=document.getElementById("fSub"),fCat=document.getElementById("fCat"),fTopic=document.getElementById("fTopic");
@@ -189,9 +190,9 @@ fetch("data/problems.json",{cache:"no-store"}).then(r=>r.json()).then(d=>{
   render();
 }).catch(e=>{document.getElementById("feed").innerHTML=`<div class="empty">Could not load data/problems.json (${esc(e.message)}).</div>`});
 document.getElementById("q").oninput=e=>{S.q=e.target.value;S.limit=30;render()};
-fSub.onchange=e=>{S.sub=e.target.value;S.limit=30;render()};
-fCat.onchange=e=>{S.cat=e.target.value;S.limit=30;render()};
-fTopic.onchange=e=>{S.topic=e.target.value;S.limit=30;render()};
+fSub.onchange=e=>{S.sub=e.target.value;S.limit=30;render();toFeed()};
+fCat.onchange=e=>{S.cat=e.target.value;S.limit=30;render();toFeed()};
+fTopic.onchange=e=>{S.topic=e.target.value;S.limit=30;render();toFeed()};
 document.getElementById("sort").onchange=e=>{S.sort=e.target.value;render()};
 document.getElementById("moreBtn").onclick=()=>{S.limit+=30;render()};
 document.getElementById("reset").onclick=()=>{Object.assign(S,{q:"",sub:"",cat:"",topic:"",cluster:"",limit:30});document.getElementById("q").value="";sync();render()};
