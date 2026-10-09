@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#07090b" />
+<title>Problem Radar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+:root{--bg:#07090b;--panel:#0e1317;--panel-2:#12181d;--line:#1e272e;--line-2:#2a353d;--text:#f4f7f8;--muted:#8a969d;--faint:#5c6970;
+--cyan:#2ad4f5;--lime:#c8f04a;--violet:#a98bff;--pink:#ff6fb5;--amber:#ffc24a;--green:#3dff9b;--red:#ff5a72;--orange:#ff8a3d;--radius:16px}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+body{min-height:100vh;background:radial-gradient(900px 500px at 8% -10%,rgba(255,111,181,.10),transparent 60%),radial-gradient(800px 500px at 100% 0%,rgba(42,212,245,.09),transparent 60%),radial-gradient(700px 500px at 50% 110%,rgba(200,240,74,.05),transparent 60%),var(--bg)}
+a{color:var(--cyan);text-decoration:none}a:hover{text-decoration:underline}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+.wrap{max-width:1320px;margin:0 auto;padding:28px 22px 60px}
+header{display:flex;flex-wrap:wrap;align-items:center;gap:14px;justify-content:space-between;margin-bottom:18px}
+.title{display:flex;align-items:center;gap:14px}
+.logo{width:42px;height:42px;border-radius:50%;background:conic-gradient(from 0deg,rgba(255,111,181,.0),var(--pink) 25%,transparent 26%),radial-gradient(circle,transparent 30%,rgba(42,212,245,.35) 31%,transparent 33%,transparent 55%,rgba(42,212,245,.35) 56%,transparent 58%),#0b1014;border:1px solid var(--line-2);animation:spin 4s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+h1{font-size:23px;font-weight:800;letter-spacing:-.02em}
+.sub{color:var(--muted);font-size:13px;margin-top:2px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chip{font:600 12px "IBM Plex Mono",monospace;padding:6px 10px;border-radius:999px;border:1px solid var(--line-2);background:var(--panel);color:var(--muted)}
+.chip.live{color:#03140a;background:var(--green);border-color:var(--green)}
+.chip.demo{color:#1a1200;background:var(--amber);border-color:var(--amber)}
+.chip.ro{color:var(--pink);border-color:rgba(255,111,181,.4);background:rgba(255,111,181,.08)}
+.banner{border:1px solid rgba(255,194,74,.45);background:rgba(255,194,74,.1);color:#ffe3a3;border-radius:var(--radius);padding:12px 16px;font-size:14px;margin-bottom:18px}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+.tile{background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--line);border-radius:var(--radius);padding:18px;position:relative;overflow:hidden}
+.tile::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--accent,var(--cyan))}
+.tile h2{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:12px;display:flex;justify-content:space-between;gap:8px;align-items:center}
+.tile h2 .hint{letter-spacing:0;text-transform:none;font-weight:500;color:var(--faint);font-size:12px}
+.span3{grid-column:span 3}.span4{grid-column:span 4}.span8{grid-column:span 8}.span12{grid-column:span 12}
+@media (max-width:1000px){.span3{grid-column:span 6}.span4,.span8{grid-column:span 12}}
+@media (max-width:560px){.span3{grid-column:span 12}}
+.big{font-size:42px;font-weight:900;letter-spacing:-.03em;line-height:1}
+.kdesc{color:var(--muted);font-size:12.5px;margin-top:8px;line-height:1.45}
+.bars{display:flex;flex-direction:column;gap:9px}
+.bar-row{display:grid;grid-template-columns:150px 1fr 40px;gap:10px;align-items:center;font-size:12.5px;cursor:pointer}
+.bar-row .name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#cfd8dc}
+.bar-row.on .name{color:var(--text);font-weight:700}
+.track{height:10px;background:#161c21;border-radius:999px;overflow:hidden}.fill{height:100%;border-radius:999px}
+.val{text-align:right;font:600 12px "IBM Plex Mono",monospace;color:var(--muted)}
+.filters{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+select,input[type=search]{background:#0a0e11;color:var(--text);border:1px solid var(--line-2);border-radius:10px;padding:9px 12px;font:500 13px Inter,sans-serif;outline:none}
+input[type=search]{min-width:240px;flex:1}
+select:focus,input:focus{border-color:var(--cyan)}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{background:#0a0e11;color:var(--muted);border:1px solid var(--line-2);border-radius:999px;padding:7px 11px;font:600 12px Inter,sans-serif;cursor:pointer}
+.seg button.on{color:#06090b;background:var(--c,var(--cyan));border-color:var(--c,var(--cyan))}
+.feed{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:12px}
+@media (max-width:560px){.feed{grid-template-columns:1fr}}
+.card{background:#0a0e11;border:1px solid var(--line);border-radius:14px;padding:15px 16px;border-left:4px solid var(--c);display:flex;flex-direction:column;gap:9px}
+.card:hover{border-color:var(--line-2);border-left-color:var(--c)}
+.meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font:500 11.5px "IBM Plex Mono",monospace;color:var(--faint)}
+.sr{color:var(--c);font-weight:700}
+.stmt{font-size:15.5px;font-weight:700;line-height:1.38;color:#eef3f5}
+.ttl{font-size:12.5px;color:var(--muted);line-height:1.4}
+.pill{display:inline-block;font:700 10.5px "IBM Plex Mono",monospace;padding:3px 7px;border-radius:6px;white-space:nowrap;border:1px solid}
+.scores{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.sbox{background:#0e1317;border:1px solid var(--line);border-radius:9px;padding:6px 8px}
+.sbox b{display:block;font:700 15px "IBM Plex Mono",monospace}
+.sbox span{font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em}
+.meter{height:4px;border-radius:9px;background:#161c21;margin-top:4px;overflow:hidden}.meter i{display:block;height:100%}
+.cm{font-size:12px;color:#aab6bc;border-left:2px solid var(--line-2);padding-left:9px;line-height:1.45}
+.cm b{color:var(--faint);font-weight:600}
+.foot{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.open{font:700 12px "IBM Plex Mono",monospace;padding:6px 10px;border-radius:8px;background:rgba(42,212,245,.08);border:1px solid rgba(42,212,245,.35)}
+.sig{font:500 10.5px "IBM Plex Mono",monospace;color:var(--faint)}
+.clusters{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.cl{background:#0a0e11;border:1px solid var(--line);border-radius:14px;padding:14px;cursor:pointer;position:relative;overflow:hidden}
+.cl.on{border-color:var(--c);box-shadow:0 0 0 1px var(--c) inset}
+.cl .n{position:absolute;right:12px;top:10px;font:900 30px Inter;color:var(--c);opacity:.9}
+.cl .lb{font:700 13px "IBM Plex Mono",monospace;color:var(--c);padding-right:44px;text-transform:lowercase}
+.cl .ex{font-size:13px;color:#dfe7ea;margin-top:8px;line-height:1.4}
+.cl .cm2{font:500 11px "IBM Plex Mono",monospace;color:var(--faint);margin-top:8px}
+.more{display:block;margin:16px auto 0;background:#0a0e11;color:var(--cyan);border:1px solid rgba(42,212,245,.4);border-radius:10px;padding:10px 18px;font:700 13px Inter;cursor:pointer}
+.empty{color:var(--muted);padding:30px;text-align:center;border:1px dashed var(--line-2);border-radius:14px}
+footer{margin-top:26px;color:var(--faint);font-size:12px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="title"><div class="logo"></div><div><h1>Problem Radar</h1><div class="sub" id="sub">Problems people post about on Reddit, found and ranked automatically.</div></div></div>
+  <div class="chips" id="chips"></div>
+</header>
+<div id="banner"></div>
+<div class="grid">
+  <div class="tile span3" style="--accent:var(--pink)"><h2>Problems found</h2><div class="big" id="k1">-</div><div class="kdesc" id="k1d"></div></div>
+  <div class="tile span3" style="--accent:var(--cyan)"><h2>Clusters</h2><div class="big" id="k2">-</div><div class="kdesc">Groups of posts describing a similar problem.</div></div>
+  <div class="tile span3" style="--accent:var(--lime)"><h2>Avg intensity</h2><div class="big" id="k3">-</div><div class="kdesc">0-100: frustration words, urgency, "me too" replies.</div></div>
+  <div class="tile span3" style="--accent:var(--amber)"><h2>Looking for a tool</h2><div class="big" id="k4">-</div><div class="kdesc">Posts asking outright for a tool, app or alternative.</div></div>
+
+  <div class="tile span4" style="--accent:var(--violet)"><h2>By subreddit <span class="hint">click to filter</span></h2><div class="bars" id="bySub"></div></div>
+  <div class="tile span4" style="--accent:var(--orange)"><h2>By type <span class="hint">click to filter</span></h2><div class="bars" id="byCat"></div></div>
+  <div class="tile span4" style="--accent:var(--green)"><h2>By topic <span class="hint">click to filter</span></h2><div class="bars" id="byTopic"></div></div>
+
+  <div class="tile span12" style="--accent:var(--cyan)"><h2>Problem clusters <span class="hint" id="clHint">click a cluster to filter the feed</span></h2><div class="clusters" id="clusters"></div></div>
+
+  <div class="tile span12" style="--accent:var(--pink)">
+    <h2>Problem feed <span class="hint" id="count"></span></h2>
+    <div class="filters" style="margin-bottom:12px">
+      <input type="search" id="q" placeholder="Search problems, e.g. invoice, CRM, burnout" />
+      <select id="fSub"><option value="">All subreddits</option></select>
+      <select id="fCat"><option value="">All types</option></select>
+      <select id="fTopic"><option value="">All topics</option></select>
+      <select id="sort"><option value="rank">Sort: radar rank</option><option value="intensity">Sort: intensity</option><option value="problem_score">Sort: problem score</option><option value="comments">Sort: comments</option><option value="new">Sort: newest</option></select>
+      <button class="more" id="reset" style="margin:0;padding:9px 14px">Reset</button>
+    </div>
+    <div class="feed" id="feed"></div>
+    <button class="more" id="moreBtn">Show more</button>
+  </div>
+</div>
+<footer id="footer"></footer>
+</div>
+<script>
+const PAL=["#ff6fb5","#2ad4f5","#c8f04a","#a98bff","#ffc24a","#3dff9b","#ff8a3d","#ff5a72","#7aa2ff","#5ef0d6"];
+const CATC={"Looking for a tool":"#ffc24a","Wants an alternative":"#ff8a3d","How-to / advice":"#2ad4f5","Frustration / pain":"#ff5a72","Cost / pricing":"#3dff9b"};
+const S={q:"",sub:"",cat:"",topic:"",cluster:"",sort:"rank",limit:30};
+let D=null,subColor={};
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt=n=>n==null?"-":n>=1000?(n/1000).toFixed(1)+"k":String(n);
+function ago(ts){if(!ts)return"";const h=(Date.now()/1000-ts)/3600;return h<1?Math.max(1,Math.round(h*60))+"m ago":h<48?Math.round(h)+"h ago":Math.round(h/24)+"d ago"}
+function heat(v){return v>=70?"#ff5a72":v>=45?"#ff8a3d":v>=25?"#ffc24a":"#3dff9b"}
+function bars(el,counts,key,colorFn){
+  const e=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,10),m=Math.max(1,...e.map(x=>x[1]));
+  document.getElementById(el).innerHTML=e.map(([k,v])=>`<div class="bar-row ${S[key]===k?"on":""}" data-k="${esc(k)}"><div class="name">${esc(k)}</div><div class="track"><div class="fill" style="width:${v/m*100}%;background:${colorFn(k)}"></div></div><div class="val">${v}</div></div>`).join("");
+  document.querySelectorAll("#"+el+" .bar-row").forEach(r=>r.onclick=()=>{S[key]=S[key]===r.dataset.k?"":r.dataset.k;S.limit=30;sync();render()});
+}
+function filtered(){
+  const q=S.q.toLowerCase();
+  let a=D.problems.filter(p=>(!S.sub||p.subreddit===S.sub)&&(!S.cat||p.category===S.cat)&&(!S.topic||(p.topics||[]).includes(S.topic))&&(!S.cluster||p.cluster===S.cluster)&&(!q||(p.statement+" "+p.title+" "+(p.excerpt||"")).toLowerCase().includes(q)));
+  const nc=p=>p.num_comments??p.num_comments_seen??0;
+  const f={rank:p=>-p.rank,intensity:p=>-p.intensity,problem_score:p=>-p.problem_score,comments:p=>-nc(p),new:p=>-(p.created_utc||0)}[S.sort];
+  return a.sort((x,y)=>f(x)-f(y));
+}
+function card(p){
+  const c=subColor[p.subreddit]||"#2ad4f5",cc=CATC[p.category]||"#8a969d",nc=p.num_comments??p.num_comments_seen;
+  const cm=(p.top_comments||[]).slice(0,1).map(x=>`<div class="cm"><b>${esc(x.author)}:</b> ${esc(x.text.slice(0,180))}${x.text.length>180?"...":""}</div>`).join("");
+  return `<div class="card" style="--c:${c}">
+   <div class="meta"><span class="sr">r/${esc(p.subreddit)}</span><span>${ago(p.created_utc)}</span><span class="pill" style="color:${cc};border-color:${cc}55;background:${cc}14">${esc(p.category)}</span>${(p.topics||[]).filter(t=>t!=="Other").map(t=>`<span class="pill" style="color:#8a969d;border-color:#2a353d">${esc(t)}</span>`).join("")}</div>
+   <div class="stmt">${esc(p.statement)}</div>
+   ${p.statement!==p.title?`<div class="ttl">Thread: ${esc(p.title)}</div>`:""}
+   <div class="scores">
+    <div class="sbox"><span>Problem</span><b style="color:${heat(p.problem_score)}">${p.problem_score}</b><div class="meter"><i style="width:${p.problem_score}%;background:${heat(p.problem_score)}"></i></div></div>
+    <div class="sbox"><span>Intensity</span><b style="color:${heat(p.intensity)}">${p.intensity}</b><div class="meter"><i style="width:${p.intensity}%;background:${heat(p.intensity)}"></i></div></div>
+    <div class="sbox"><span>Upvotes</span><b>${fmt(p.score)}</b></div>
+    <div class="sbox"><span>Comments</span><b>${fmt(nc)}</b></div>
+   </div>${cm}
+   <div class="foot"><span class="sig">${(p.signals||[]).slice(0,3).map(s=>'"'+esc(s)+'"').join(" ")}${p.metoo?` | ${p.metoo} me-too`:""}</span><a class="open" href="${esc(p.url)}" target="_blank" rel="noopener">Open thread</a></div>
+  </div>`;
+}
+function render(){
+  const all=D.problems;
+  bars("bySub",count(all,p=>[p.subreddit]),"sub",k=>subColor[k]);
+  bars("byCat",count(all,p=>[p.category]),"cat",k=>CATC[k]||"#8a969d");
+  bars("byTopic",count(all,p=>p.topics||[]),"topic",(k)=>PAL[Object.keys(count(all,p=>p.topics||[])).sort().indexOf(k)%PAL.length]);
+  document.getElementById("clusters").innerHTML=D.clusters.slice(0,12).map((c,i)=>`<div class="cl ${S.cluster===c.id?"on":""}" data-id="${c.id}" style="--c:${PAL[i%PAL.length]}"><div class="n">${c.size}</div><div class="lb">${esc(c.label)}</div><div class="ex">${esc(c.example)}</div><div class="cm2">${c.subreddits.slice(0,4).map(s=>"r/"+esc(s)).join(" ")} | intensity ${c.avg_intensity}</div></div>`).join("")||`<div class="empty">No clusters yet.</div>`;
+  document.querySelectorAll(".cl").forEach(el=>el.onclick=()=>{S.cluster=S.cluster===el.dataset.id?"":el.dataset.id;S.limit=30;render();document.getElementById("feed").scrollIntoView({behavior:"smooth",block:"start"})});
+  const f=filtered();
+  document.getElementById("count").textContent=`${f.length} of ${all.length} problems${S.cluster?" | cluster filter on":""}`;
+  document.getElementById("feed").innerHTML=f.slice(0,S.limit).map(card).join("")||`<div class="empty">No problems match these filters.</div>`;
+  document.getElementById("moreBtn").style.display=f.length>S.limit?"block":"none";
+}
+function count(a,fn){const o={};a.forEach(p=>fn(p).forEach(k=>o[k]=(o[k]||0)+1));return o}
+function sync(){fSub.value=S.sub;fCat.value=S.cat;fTopic.value=S.topic}
+const fSub=document.getElementById("fSub"),fCat=document.getElementById("fCat"),fTopic=document.getElementById("fTopic");
+fetch("data/problems.json",{cache:"no-store"}).then(r=>r.json()).then(d=>{
+  D=d;const subs=[...new Set(d.problems.map(p=>p.subreddit))].sort();
+  Object.entries(count(d.problems,p=>[p.subreddit])).sort((a,b)=>b[1]-a[1]).forEach(([s],i)=>subColor[s]=PAL[i%PAL.length]);
+  fSub.innerHTML+=subs.map(s=>`<option>${esc(s)}</option>`).join("");
+  fCat.innerHTML+=Object.keys(count(d.problems,p=>[p.category])).sort().map(s=>`<option>${esc(s)}</option>`).join("");
+  fTopic.innerHTML+=Object.keys(count(d.problems,p=>p.topics||[])).sort().map(s=>`<option>${esc(s)}</option>`).join("");
+  const st=d.stats||{},n=d.problems.length;
+  document.getElementById("k1").textContent=n;
+  document.getElementById("k1d").textContent=`out of ${st.kept_recent??"?"} recent posts scanned from ${st.ok??"?"} feeds.`;
+  document.getElementById("k2").textContent=d.clusters.length;
+  document.getElementById("k3").textContent=n?Math.round(d.problems.reduce((s,p)=>s+p.intensity,0)/n):0;
+  document.getElementById("k4").textContent=d.problems.filter(p=>p.category==="Looking for a tool"||p.category==="Wants an alternative").length;
+  const when=new Date(d.generated_at);
+  document.getElementById("chips").innerHTML=`<span class="chip ${d.demo?"demo":"live"}">${d.demo?"DEMO DATA":"REAL REDDIT DATA"}</span><span class="chip ro">READ-ONLY</span><span class="chip">${when.toLocaleString([], {dateStyle:"medium",timeStyle:"short"})}</span>`;
+  if(d.demo)document.getElementById("banner").innerHTML=`<div class="banner"><b>Demo data.</b> Run <span class="mono">python radar.py</span> to collect real posts.</div>`;
+  document.getElementById("footer").innerHTML=`Source: ${esc(d.source)}. LLM: ${esc(st.llm||"none")}. ${st.comment_threads_read??0} comment threads read. Read-only: this tool never posts, votes or replies. Inspired by <a href="https://ownfeed.dev" target="_blank" rel="noopener">Ownfeed</a>. <a href="https://github.com/plutunieer/problem-radar">Source on GitHub</a>.`;
+  render();
+}).catch(e=>{document.getElementById("feed").innerHTML=`<div class="empty">Could not load data/problems.json (${esc(e.message)}).</div>`});
+document.getElementById("q").oninput=e=>{S.q=e.target.value;S.limit=30;render()};
+fSub.onchange=e=>{S.sub=e.target.value;S.limit=30;render()};
+fCat.onchange=e=>{S.cat=e.target.value;S.limit=30;render()};
+fTopic.onchange=e=>{S.topic=e.target.value;S.limit=30;render()};
+document.getElementById("sort").onchange=e=>{S.sort=e.target.value;render()};
+document.getElementById("moreBtn").onclick=()=>{S.limit+=30;render()};
+document.getElementById("reset").onclick=()=>{Object.assign(S,{q:"",sub:"",cat:"",topic:"",cluster:"",limit:30});document.getElementById("q").value="";sync();render()};
+</script>
+</body>
+</html>
